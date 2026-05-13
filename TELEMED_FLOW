@@ -1,3 +1,5 @@
+CREATE OR REPLACE TABLE `global-grammar-425610-k5.cdp_events_aggregate.cdp_events_telemed_booking flow` AS
+
 WITH base AS (
 
     SELECT
@@ -5,7 +7,7 @@ WITH base AS (
         page_url,
         event_name,
         DATE(derived_tstamp) AS event_date,
-        unstruct_event_care_mavie_portal_telemed_auth_completed_1.auth_type as TelemedAuthCompleted,   
+        unstruct_event_care_mavie_portal_telemed_auth_completed_1.auth_type as telemed_auth_type,   
         LOWER(unstruct_event_care_mavie_portal_telemed_booking_flow_event_1.event_name) AS telemed_event_name,
 
         unstruct_event_care_mavie_portal_telemed_booking_flow_event_1.doctor_name as doctor_name ,
@@ -36,6 +38,14 @@ funnel AS (
         user_id,
         --MIN(event_date) AS first_event_date,
         event_date,
+        weekday,
+        telemed_event_name,
+        doctor_name,
+        specialization,
+        telmed_source,
+        consultation_channel,
+        telemed_auth_type,
+        
 
        --ANY_VALUE(telmed_source) AS source,
         --ANY_VALUE(specialization) AS specialization,
@@ -62,6 +72,30 @@ funnel AS (
 
         CASE WHEN telemed_event_name = 'booking_completed'
             THEN 1 ELSE 0 END AS booking_completed,
+
+        CASE WHEN event_name = 'telemed_feedback_submitted' then
+           1 ELSE 0 END AS telemed_feedback_submitted
+
+
+    FROM base
+
+)
+
+SELECT
+    event_date,
+    weekday,
+    COUNT(*) AS users,
+
+    SUM(booking_page_viewed) AS booking_page,
+    SUM(confirm_appointment) AS confirm_appointment,
+    SUM(personal_data_submitted) AS personal_data_submitted,
+    SUM(booking_confirmed) AS booking_confirmed,
+    SUM(telemed_auth_completed) AS telemed_auth_completed,
+    SUM(booking_completed) AS booking_completed,
+    SUM(telemed_feedback_submitted) AS telemed_feedback_submitted
+
+FROM funnel
+GROUP BY event_date,weekday;            THEN 1 ELSE 0 END AS booking_completed,
 
         CASE WHEN event_name = 'telemed_feedback_submitted' then
            1 ELSE 0 END AS telemed_feedback_submitted
