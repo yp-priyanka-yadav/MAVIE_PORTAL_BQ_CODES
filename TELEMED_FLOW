@@ -27,9 +27,8 @@ WITH base AS (
             WHEN EXTRACT(DAYOFWEEK FROM derived_tstamp) = 7 THEN 'Sat'
         END AS weekday
 
-    FROM `global-grammar-425610-k5.cdp_events_dataset_staging.cdp_events_staging` 
-
-    WHERE DATE(derived_tstamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+    FROM `global-grammar-425610-k5.cdp_events_dataset_staging.cdp_events_staging`  where app_id = 'portals-portal'
+    and event_name like '%telemed%'
 ),
 
 funnel AS (
@@ -38,6 +37,7 @@ funnel AS (
         user_id,
         --MIN(event_date) AS first_event_date,
         event_date,
+        event_name,
         weekday,
         telemed_event_name,
         doctor_name,
@@ -58,8 +58,11 @@ funnel AS (
         CASE WHEN page_url like  '%telemedicine/booking/create%'
             THEN 1 ELSE 0 END AS booking_page_viewed,
 
+        CASE WHEN event_name = 'telemed_appointment_book'
+            THEN 1 ELSE 0 END AS telemed_appointment_book,
+
         CASE WHEN event_name = 'telemed_appointment_reserve'
-            THEN 1 ELSE 0 END AS confirm_appointment,
+            THEN 1 ELSE 0 END AS telemed_appointment_reserve,
 
         CASE WHEN telemed_event_name = 'personal_data_submitted'
             THEN 1 ELSE 0 END AS personal_data_submitted,
@@ -82,12 +85,21 @@ funnel AS (
 )
 
 SELECT
+    user_id,
     event_date,
+    event_name,
     weekday,
-    COUNT(*) AS users,
+    telemed_event_name,
+    doctor_name,
+    specialization,
+    telmed_source,
+    consultation_channel,
+    telemed_auth_type,
 
-    SUM(booking_page_viewed) AS booking_page,
-    SUM(confirm_appointment) AS confirm_appointment,
+
+    SUM(booking_page_viewed) AS booking_page_viewed,
+    SUM(telemed_appointment_book) AS telemed_appointment_book,
+    SUM(telemed_appointment_reserve) AS appointment_reserve,
     SUM(personal_data_submitted) AS personal_data_submitted,
     SUM(booking_confirmed) AS booking_confirmed,
     SUM(telemed_auth_completed) AS telemed_auth_completed,
@@ -95,27 +107,5 @@ SELECT
     SUM(telemed_feedback_submitted) AS telemed_feedback_submitted
 
 FROM funnel
-GROUP BY event_date,weekday;            THEN 1 ELSE 0 END AS booking_completed,
-
-        CASE WHEN event_name = 'telemed_feedback_submitted' then
-           1 ELSE 0 END AS telemed_feedback_submitted
-
-
-    FROM base
-
-)
-
-SELECT
-    event_date,
-    COUNT(*) AS users,
-
-    SUM(booking_page_viewed) AS booking_page,
-    SUM(confirm_appointment) AS confirm_appointment,
-    SUM(personal_data_submitted) AS personal_data_submitted,
-    SUM(booking_confirmed) AS booking_confirmed,
-    SUM(telemed_auth_completed) AS telemed_auth_completed,
-    SUM(booking_completed) AS booking_completed,
-    SUM(telemed_feedback_submitted) AS telemed_feedback_submitted
-
-FROM funnel
-GROUP BY event_date;
+GROUP BY  user_id, event_date, event_name, weekday, telemed_event_name, doctor_name, specialization, telmed_source, consultation_channel, telemed_auth_type
+;
