@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE `global-grammar-425610-k5.cdp_events_aggregate.cdp_events_telemed_booking flow` AS
+CREATE OR REPLACE TABLE `global-grammar-425610-k5.cdp_events_aggregate.cdp_events_telemed_booking_flow` AS
 
 WITH base AS (
 
