@@ -76,6 +76,12 @@ funnel AS (
         CASE WHEN telemed_event_name = 'booking_completed'
             THEN 1 ELSE 0 END AS booking_completed,
 
+        CASE WHEN page_url like  '%consultation-booking-reason%'
+            THEN 1 ELSE 0 END AS payment_done,
+
+        CASE WHEN page_url like  '%confirmation%'
+            THEN 1 ELSE 0 END AS booking_reason_provided,
+
         CASE WHEN event_name = 'telemed_feedback_submitted' then
            1 ELSE 0 END AS telemed_feedback_submitted
 
@@ -96,7 +102,6 @@ SELECT
     consultation_channel,
     telemed_auth_type,
 
-
     SUM(booking_page_viewed) AS booking_page_viewed,
     SUM(telemed_appointment_book) AS telemed_appointment_book,
     SUM(telemed_appointment_reserve) AS appointment_reserve,
@@ -104,8 +109,11 @@ SELECT
     SUM(booking_confirmed) AS booking_confirmed,
     SUM(telemed_auth_completed) AS telemed_auth_completed,
     SUM(booking_completed) AS booking_completed,
+    SUM(payment_done) AS payment_done,
+    SUM(booking_reason_provided) AS booking_reason_provided,
     SUM(telemed_feedback_submitted) AS telemed_feedback_submitted
 
 FROM funnel
 GROUP BY  user_id, event_date, event_name, weekday, telemed_event_name, doctor_name, specialization, telmed_source, consultation_channel, telemed_auth_type
+
 ;
