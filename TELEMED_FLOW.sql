@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE `global-grammar-425610-k5.cdp_events_aggregate.cdp_events_telemed_booking_flow` AS
+CREATE OR REPLACE TABLE `gmavie-platform-production.cdp_events_aggregate.cdp_events_telemed_booking_flow` AS
 
 WITH base AS (
 
@@ -7,13 +7,13 @@ WITH base AS (
         page_url,
         event_name,
         DATE(derived_tstamp) AS event_date,
-        unstruct_event_care_mavie_portal_telemed_auth_completed_1.auth_type as telemed_auth_type,   
-        LOWER(unstruct_event_care_mavie_portal_telemed_booking_flow_event_1.event_name) AS telemed_event_name,
+        unstruct_event_care_mavie_portal_telemed_auth_completed_2.auth_type as telemed_auth_type,   
+        LOWER(unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.event_name) AS telemed_event_name,
 
-        unstruct_event_care_mavie_portal_telemed_booking_flow_event_1.doctor_name as doctor_name ,
-        unstruct_event_care_mavie_portal_telemed_booking_flow_event_1.specialization as specialization,
-        unstruct_event_care_mavie_portal_telemed_booking_flow_event_1.source as telmed_source,
-        unstruct_event_care_mavie_portal_telemed_booking_flow_event_1.consultation_channel as consultation_channel,
+        unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.doctor_name as doctor_name ,
+        unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.specialization as specialization,
+        unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.source as telmed_source,
+        unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.consultation_channel as consultation_channel,
 
         EXTRACT(DAYOFWEEK FROM derived_tstamp) AS weekday_num,
 
@@ -27,7 +27,7 @@ WITH base AS (
             WHEN EXTRACT(DAYOFWEEK FROM derived_tstamp) = 7 THEN 'Sat'
         END AS weekday
 
-    FROM `global-grammar-425610-k5.cdp_events_dataset_staging.cdp_events_staging`  where app_id = 'portals-portal'
+    FROM `mavie-platform-production.cdp_events_dataset_production.cdp_events_production`   where app_id = 'portals-portal'
     and event_name like '%telemed%'
 ),
 
