@@ -58,10 +58,10 @@ funnel AS (
         CASE WHEN page_url like  '%telemedicine/booking/create%'
             THEN 1 ELSE 0 END AS booking_page_viewed,
 
-        CASE WHEN event_name = 'telemed_appointment_book'
+        CASE WHEN telemed_event_name = 'appointment_booked'
             THEN 1 ELSE 0 END AS telemed_appointment_book,
 
-        CASE WHEN event_name = 'telemed_appointment_reserve'
+        CASE WHEN telemed_event_name = 'appointment_reserved'
             THEN 1 ELSE 0 END AS telemed_appointment_reserve,
 
         CASE WHEN telemed_event_name = 'personal_data_submitted'
