@@ -1,0 +1,116 @@
+
+CREATE OR REPLACE TABLE `mavie-platform-production.cdp_events_aggregate.cdp_events_telemed_booking_flow` AS
+with base as (
+SELECT
+    COALESCE(
+        NULLIF(CAST(user_id AS STRING), ''),
+        NULLIF(domain_userid, ''),
+        NULLIF(network_userid, '')
+        ) AS unified_user_id,
+    page_url,
+    event_name,
+    DATE(derived_tstamp) AS event_date,
+    unstruct_event_care_mavie_portal_telemed_auth_completed_2.auth_type AS telemed_auth_type,
+
+    LOWER(
+        unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.event_name
+    ) AS telemed_event_name,
+
+    unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.doctor_name AS doctor_name,
+
+    unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.specialization AS specialization,
+
+    unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.source AS telmed_source,
+
+    unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.consultation_channel AS consultation_channel,
+
+    CASE
+        WHEN EXTRACT(DAYOFWEEK FROM derived_tstamp) = 1 THEN 'Sun'
+        WHEN EXTRACT(DAYOFWEEK FROM derived_tstamp) = 2 THEN 'Mon'
+        WHEN EXTRACT(DAYOFWEEK FROM derived_tstamp) = 3 THEN 'Tue'
+        WHEN EXTRACT(DAYOFWEEK FROM derived_tstamp) = 4 THEN 'Wed'
+        WHEN EXTRACT(DAYOFWEEK FROM derived_tstamp) = 5 THEN 'Thu'
+        WHEN EXTRACT(DAYOFWEEK FROM derived_tstamp) = 6 THEN 'Fri'
+        WHEN EXTRACT(DAYOFWEEK FROM derived_tstamp) = 7 THEN 'Sat'
+    END AS weekday,
+
+    -- Funnel step flags (PER EVENT, NOT aggregated)
+
+    CASE
+        WHEN page_url LIKE '%de-AT/telemedicine/booking/create%'
+        THEN 1 ELSE 0
+    END AS booking_page_viewed,
+
+    CASE
+        WHEN unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.event_name = 'appointment_booked'
+        THEN 1 ELSE 0
+    END AS telemed_appointment_book,
+
+    CASE
+        WHEN unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.event_name = 'appointment_reserved'
+        THEN 1 ELSE 0
+    END AS telemed_appointment_reserve,
+
+    CASE
+        WHEN unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.event_name = 'personal_data_submitted'
+        THEN 1 ELSE 0
+    END AS personal_data_submitted,
+
+    CASE
+        WHEN unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.event_name = 'booking_confirmed'
+        THEN 1 ELSE 0
+    END AS booking_confirmed,
+
+    CASE
+        WHEN event_name = 'telemed_auth_completed'
+        THEN 1 ELSE 0
+    END AS telemed_auth_completed,
+
+    CASE
+        WHEN unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.event_name = 'booking_completed'
+        THEN 1 ELSE 0
+    END AS booking_completed,
+
+    CASE
+        WHEN page_url LIKE '%reason%'
+        THEN 1 ELSE 0
+    END AS payment_done,
+
+    CASE
+        WHEN page_url LIKE '%confirmation%'
+        THEN 1 ELSE 0
+    END AS booking_reason_provided,
+
+    CASE
+        WHEN event_name = 'telemed_feedback_submitted'
+        THEN 1 ELSE 0
+    END AS telemed_feedback_submitted
+
+FROM `mavie-platform-production.cdp_events_dataset_production.cdp_events_production`
+
+WHERE app_id = 'portals-portal'
+  AND event_name LIKE '%telemed%'
+)
+
+SELECT
+    unified_user_id,
+    event_date,
+    weekday,
+    doctor_name,
+    specialization,
+    telmed_source,
+    consultation_channel,
+    SUM(booking_page_viewed) AS booking_page_viewed,
+    SUM(telemed_appointment_book) AS telemed_appointment_book,
+    SUM(telemed_appointment_reserve) AS appointment_reserve,
+    SUM(personal_data_submitted) AS personal_data_submitted,
+    SUM(booking_confirmed) AS booking_confirmed,
+    SUM(telemed_auth_completed) AS telemed_auth_completed,
+    SUM(booking_completed) AS booking_completed,
+    SUM(payment_done) AS payment_done,
+    SUM(booking_reason_provided) AS booking_reason_provided,
+    SUM(telemed_feedback_submitted) AS telemed_feedback_submitted
+
+FROM base 
+GROUP BY  unified_user_id, event_date, weekday, doctor_name, specialization, telmed_source, consultation_channel
+;
