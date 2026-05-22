@@ -36,8 +36,8 @@ SELECT
 
     -- Funnel step flags (PER EVENT, NOT aggregated)
 
-    CASE
-        WHEN page_url LIKE '%de-AT/telemedicine/booking/create%'
+   CASE
+        WHEN page_url LIKE '%de-AT/telemedicine/booking/create%' or page_url LIKE '%en-AT/telemedicine/booking/create%'
         THEN 1 ELSE 0
     END AS booking_page_viewed,
 
