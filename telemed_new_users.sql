@@ -38,13 +38,17 @@ SELECT
     -- TOTAL users who viewed booking page
     COUNT(DISTINCT CASE
         WHEN page_url LIKE '%de-AT/telemedicine/booking/create%' or page_url LIKE '%en-AT/telemedicine/booking/create%'
+        or page_url LIKE '%de-AT/telemedicine/assistive/create' or page_url LIKE '%en-AT/telemedicine/assistive/create'
+        or page_url like '%de-AT/optiweight/booking/create%' or page_url LIKE '%en-AT/optiweight/booking/create%'
         THEN base.unified_user_id
     END) AS total_booking_page_users,
 
     -- NEW users who viewed booking page
     COUNT(DISTINCT CASE
         WHEN page_url LIKE '%de-AT/telemedicine/booking/create%' or page_url LIKE '%en-AT/telemedicine/booking/create%'
-         AND base.event_date = first_seen.first_event_date
+        or page_url LIKE '%de-AT/telemedicine/assistive/create' or page_url LIKE '%en-AT/telemedicine/assistive/create'
+        or page_url like '%de-AT/optiweight/booking/create%' or page_url LIKE '%en-AT/optiweight/booking/create%'
+        AND base.event_date = first_seen.first_event_date
         THEN base.unified_user_id
     END) AS new_booking_page_users,
 
