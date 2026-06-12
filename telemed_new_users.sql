@@ -13,7 +13,7 @@ WITH base AS (
         page_url,
 
         LOWER(
-          unstruct_event_care_mavie_portal_telemed_booking_flow_event_2.event_name
+          unstruct_event_care_mavie_portal_telemed_booking_flow_event_3.event_name
         ) AS telemed_event_name
 
     FROM `mavie-platform-production.cdp_events_dataset_production.cdp_events_production`
