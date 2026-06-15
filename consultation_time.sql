@@ -1,3 +1,4 @@
+CREATE OR REPLACE TABLE `mavie-platform-production.cdp_events_aggregate.cdp_events_avergae_duration_days` AS
 SELECT
   ROUND(
     AVG(
@@ -15,13 +16,14 @@ SELECT
           )
         ),
         derived_tstamp,
-        MINUTE
+        SECOND
       )
-    ) / 60,
+    ) / 86400,
     2
-  ) AS avg_duration_hours
+  ) AS avg_duration_days
 FROM `mavie-platform-production.cdp_events_dataset_production.cdp_events_production`
-WHERE unstruct_event_care_mavie_portal_telemed_booking_flow_event_3.event_name = 'booking_completed';
+WHERE unstruct_event_care_mavie_portal_telemed_booking_flow_event_3.event_name = 'booking_completed'
+and app_id = 'portals-portal';
 
 
 
