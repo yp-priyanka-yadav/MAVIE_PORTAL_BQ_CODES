@@ -37,9 +37,9 @@ SELECT
     -- Funnel step flags (PER EVENT, NOT aggregated)
 
    CASE
-        WHEN page_url LIKE '%de-AT/telemedicine/booking/create%' or page_url LIKE '%en-AT/telemedicine/booking/create%'
-        or page_url LIKE '%de-AT/telemedicine/assistive/create' or page_url LIKE '%en-AT/telemedicine/assistive/create'
-        or page_url like '%de-AT/optiweight/booking/create%' or page_url LIKE '%en-AT/optiweight/booking/create%'
+        WHEN page_url LIKE '%telemedicine/booking/create%'
+        or page_url LIKE '%telemedicine/assistive/create%' 
+        or page_url LIKE '%telemedicine/booking/create-uniqa%'
 
         THEN 1 ELSE 0
     END AS booking_page_viewed,
@@ -75,11 +75,6 @@ SELECT
     END AS booking_completed,
 
     CASE
-        WHEN page_url LIKE '%reason%'
-        THEN 1 ELSE 0
-    END AS payment_done,
-
-    CASE
         WHEN page_url LIKE '%confirmation%'
         THEN 1 ELSE 0
     END AS booking_reason_provided,
@@ -110,7 +105,6 @@ SELECT
     SUM(booking_confirmed) AS booking_confirmed,
     SUM(telemed_auth_completed) AS telemed_auth_completed,
     SUM(booking_completed) AS booking_completed,
-    SUM(payment_done) AS payment_done,
     SUM(booking_reason_provided) AS booking_reason_provided,
     SUM(telemed_feedback_submitted) AS telemed_feedback_submitted
 
