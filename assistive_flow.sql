@@ -1,3 +1,4 @@
+CREATE OR REPLACE TABLE `mavie-platform-production.cdp_events_aggregate.cdp_events_telemed_booking_flow_assistive_portals_portal` AS
 WITH base AS (
 SELECT
     user_id,
@@ -67,7 +68,7 @@ SELECT
     COUNT (DISTINCT case when booking_completed=1 then booking_id_confirmation end ) AS booking_completed
 
 FROM base
-WHERE event_date >= DATE '2026-06-11' and user_id is not null
+WHERE user_id is not null and weekday in ('Fri','Sat')
 group by 
     user_id,
     event_date,
