@@ -1,5 +1,5 @@
 
-CREATE OR REPLACE TABLE `mavie-platform-production.cdp_events_aggregate.cdp_events_telemed_booking_flow` AS
+CREATE OR REPLACE TABLE `mavie-platform-production.cdp_events_aggregate.cdp_events_telemed_booking_flow_portals_portal` AS
 with base as (
 SELECT
     COALESCE(
