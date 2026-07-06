@@ -11,7 +11,7 @@ with base_data as
     when specialization_key like 'general_practitioner_consultation%' then 'general' else 'other'
     end as telmed_source
      FROM `global-grammar-425610-k5.telemed_export_dataset_staging.consultations` 
-     where is_feedback_dismissed != True
+     where is_feedback_dismissed != True and status = 'finished'
 ),
 feedback as
 (
