@@ -17,7 +17,7 @@ feedback as
 (
   select 
   Date(created_at) as event_date,
-  telmed_source,
+  telemed_source,
   response_feedback_question_id as question_id,
   question_text_i18n_key as question_type,
   response_response_text as text,
