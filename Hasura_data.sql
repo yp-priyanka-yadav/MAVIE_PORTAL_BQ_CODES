@@ -22,6 +22,44 @@ consultations as
 )
 select * from consultations;
 
+CREATE OR REPLACE TABLE `mavie-platform-production.cdp_events_aggregate.cdp_events_telemed_consultations_portals_portal` AS
+
+WITH base_data AS (
+  SELECT *,
+    CASE
+      WHEN specialization_key LIKE '%optiweight%' OR specialization_key LIKE '%dietician%' THEN 'optiweight'
+      WHEN specialization_key LIKE '%assistive%' THEN 'assistive'
+      WHEN specialization_key LIKE '%bipa%' THEN 'bipa'
+      WHEN specialization_key LIKE '%uniqa%' THEN 'uniqa'
+      WHEN specialization_key LIKE 'general_practitioner_consultation%' THEN 'general'
+      ELSE 'other'
+    END AS telemed_source,
+    CASE
+      WHEN EXTRACT(HOUR FROM TIMESTAMP(start_datetime_utc)) BETWEEN 0 AND 5 THEN 'Night (00-05)'
+      WHEN EXTRACT(HOUR FROM TIMESTAMP(start_datetime_utc)) BETWEEN 6 AND 11 THEN 'Morning (06-11)'
+      WHEN EXTRACT(HOUR FROM TIMESTAMP(start_datetime_utc)) BETWEEN 12 AND 17 THEN 'Afternoon (12-17)'
+      ELSE 'Evening (18-23)'
+    END AS booking_hour_segment
+  FROM `global-grammar-425610-k5.telemed_export_dataset_staging.consultations`
+  WHERE status = 'finished'
+),
+
+consultations AS (
+  SELECT
+    DATE(created_at) AS event_date,
+    FORMAT_DATE('%A', DATE(created_at)) AS weekday,
+    telemed_source,
+    specialization_key AS specialization,
+    type as communication_type,
+    booking_hour_segment,
+    TIMESTAMP_DIFF(timestamp(start_datetime_utc), timestamp(created_at), HOUR) AS diff_hours,
+    consultation_id_from_consultation_table as  consultations
+  FROM base_data
+)
+
+SELECT *
+FROM consultations;
+
 
 ----------- consultation_data as requested
 
