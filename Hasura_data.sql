@@ -9,6 +9,7 @@ with base_data as
     when specialization_key like 'general_practitioner_consultation%' then 'general' else 'other'
     end as telemed_source
      FROM `global-grammar-425610-k5.telemed_export_dataset_staging.consultations` 
+    where status = 'finished'
 ),
 consultations as
 (
@@ -34,6 +35,7 @@ with consultations as
     when specialization_key like 'general_practitioner_consultation%' then 'general' else 'other'
     end as telemed_source
      FROM `global-grammar-425610-k5.telemed_export_dataset_staging.consultations` 
+   where status = 'finished'
 ),
 consultations_assistive as (
 SELECT
