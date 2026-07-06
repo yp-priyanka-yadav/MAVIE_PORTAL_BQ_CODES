@@ -8,7 +8,7 @@ with base_data as
     when specialization_key like '%assistive%' then 'assistive' 
     when specialization_key like '%bipa%' then 'bipa'
     when specialization_key like '%uniqa%' then 'uniqa'
-    when specialization_key like 'general_practitioner_consultation%' then 'general' else 'other'
+    when specialization_key like 'general_practitioner_consultation' then 'general' else 'other'
     end as telemed_source
      FROM `global-grammar-425610-k5.telemed_export_dataset_staging.consultations` 
      where is_feedback_dismissed != True and status = 'finished'
