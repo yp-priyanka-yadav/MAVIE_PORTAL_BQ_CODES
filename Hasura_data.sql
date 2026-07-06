@@ -15,6 +15,7 @@ with base_data as
 consultations as
 (
   select DATE(created_at) as event_date, telemed_source,
+  specialization_key as specialization,
   count(distinct consultation_id_from_consultation_table) as consultations
   from base_data
   group by event_date, telemed_source
