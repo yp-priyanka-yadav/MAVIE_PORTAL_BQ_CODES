@@ -22,7 +22,6 @@ consultations as
 )
 select * from consultations;
 --------------
-
 CREATE OR REPLACE TABLE `mavie-platform-production.cdp_events_aggregate.cdp_events_telemed_consultations_portals_portal` AS
 
 WITH base_data AS (
@@ -45,7 +44,7 @@ WITH base_data AS (
   WHERE status = 'finished'
 ),
 
-consultations AS (
+consultations_data AS (
   SELECT
     DATE(created_at) AS event_date,
     FORMAT_DATE('%A', DATE(created_at)) AS weekday,
@@ -61,7 +60,7 @@ consultations AS (
 )
 
 SELECT *
-FROM consultations;
+FROM consultations_data;
 -------------
 CREATE OR REPLACE TABLE `mavie-platform-production.cdp_events_aggregate.cdp_events_telemed_consultations_portals_portal` AS
 
