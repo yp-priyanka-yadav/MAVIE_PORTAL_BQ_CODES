@@ -9,7 +9,7 @@ with base_data as
     when specialization_key like '%bipa%' then 'bipa'
     when specialization_key like '%uniqa%' then 'uniqa'
     when specialization_key like 'general_practitioner_consultation%' then 'general' else 'other'
-    end as telmed_source
+    end as telemed_source
      FROM `global-grammar-425610-k5.telemed_export_dataset_staging.consultations` 
      where is_feedback_dismissed != True and status = 'finished'
 ),
@@ -25,7 +25,6 @@ feedback as
   count(consultation_id_from_consultation_table) as consultations_count
   from base_data
   where response_response_numeric_value is not null
-  group by event_date, telmed_source, question_id, question_type,text, rating
+  group by event_date, telemed_source, question_id, question_type,text, rating
 )
 select * from feedback;
-
