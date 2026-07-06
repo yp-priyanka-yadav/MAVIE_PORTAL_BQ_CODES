@@ -1,4 +1,5 @@
 ----------- consultation_data 
+CREATE OR REPLACE TABLE `mavie-platform-production.cdp_events_aggregate.cdp_events_telemed_consultations_portals_portal` AS
 with base_data as
 (
   SELECT *,
