@@ -20,7 +20,7 @@ consultations as
 select * from consultations;
 
 
------------ consultation as requested
+----------- consultation_data as requested
 
 
 with consultations as
@@ -43,7 +43,7 @@ SELECT
              DATE_SUB(DATE_TRUNC(CURRENT_DATE(), WEEK(MONDAY)), INTERVAL 7 DAY)
              AND DATE_SUB(DATE_TRUNC(CURRENT_DATE(), WEEK(MONDAY)), INTERVAL 1 DAY)
         THEN consultation_id_from_consultation_table
-    END) AS consultations,
+    END) AS consultations_this_week,
     COUNT(DISTINCT CASE
         WHEN event_date >= DATE_TRUNC(CURRENT_DATE(), YEAR)
         THEN consultation_id_from_consultation_table
@@ -59,7 +59,7 @@ SELECT
              DATE_SUB(DATE_TRUNC(CURRENT_DATE(), WEEK(MONDAY)), INTERVAL 7 DAY)
              AND DATE_SUB(DATE_TRUNC(CURRENT_DATE(), WEEK(MONDAY)), INTERVAL 1 DAY)
         THEN consultation_id_from_consultation_table
-    END) AS consultations,
+    END) AS consultations_this_week,
     COUNT(DISTINCT CASE
         WHEN event_date >= DATE_TRUNC(CURRENT_DATE(), YEAR)
         THEN consultation_id_from_consultation_table
@@ -75,7 +75,7 @@ SELECT
              DATE_SUB(DATE_TRUNC(CURRENT_DATE(), WEEK(MONDAY)), INTERVAL 7 DAY)
              AND DATE_SUB(DATE_TRUNC(CURRENT_DATE(), WEEK(MONDAY)), INTERVAL 1 DAY)
         THEN consultation_id_from_consultation_table
-    END) AS consultations,
+    END) AS consultations_this_week,
     COUNT(DISTINCT CASE
         WHEN event_date >= DATE_TRUNC(CURRENT_DATE(), YEAR)
         THEN consultation_id_from_consultation_table
@@ -91,7 +91,7 @@ SELECT
              DATE_SUB(DATE_TRUNC(CURRENT_DATE(), WEEK(MONDAY)), INTERVAL 7 DAY)
              AND DATE_SUB(DATE_TRUNC(CURRENT_DATE(), WEEK(MONDAY)), INTERVAL 1 DAY)
         THEN consultation_id_from_consultation_table
-    END) AS consultations,
+    END) AS consultations_this_week,
     COUNT(DISTINCT CASE
         WHEN event_date >= DATE_TRUNC(CURRENT_DATE(), YEAR)
         THEN consultation_id_from_consultation_table
@@ -107,7 +107,7 @@ SELECT
              DATE_SUB(DATE_TRUNC(CURRENT_DATE(), WEEK(MONDAY)), INTERVAL 7 DAY)
              AND DATE_SUB(DATE_TRUNC(CURRENT_DATE(), WEEK(MONDAY)), INTERVAL 1 DAY)
         THEN consultation_id_from_consultation_table
-    END) AS consultations,
+    END) AS consultations_this_week,
     COUNT(DISTINCT CASE
         WHEN event_date >= DATE_TRUNC(CURRENT_DATE(), YEAR)
         THEN consultation_id_from_consultation_table
