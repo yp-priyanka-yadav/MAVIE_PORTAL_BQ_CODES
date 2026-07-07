@@ -211,7 +211,6 @@ select * from consultations_bipa;
 
 
 --------final logic
-
 CREATE OR REPLACE TABLE `mavie-platform-production.cdp_events_aggregate.cdp_events_telemed_consultations_weekly_yearly_portals_portal` AS
 
 WITH consultations AS (
@@ -276,11 +275,11 @@ SELECT
   LAG(consultations_count) OVER (
     PARTITION BY telemed_source ORDER BY week_start_date
   )                                                                          AS previous_week_count,
-  ROUND(
+
     SAFE_DIVIDE(
       consultations_count - LAG(consultations_count) OVER (PARTITION BY telemed_source ORDER BY week_start_date),
       LAG(consultations_count) OVER (PARTITION BY telemed_source ORDER BY week_start_date)
-    ) * 100, 2
+  
   )                                                                          AS new_consultations_growth_rate,
 
   -- Cumulative (YTD) total consultations
@@ -290,12 +289,10 @@ SELECT
   )                                                                          AS previous_week_total_ytd,
 
 
-
-  ROUND(
     SAFE_DIVIDE(
       total_consultations_ytd - LAG(total_consultations_ytd) OVER (PARTITION BY telemed_source ORDER BY week_start_date),
       LAG(total_consultations_ytd) OVER (PARTITION BY telemed_source ORDER BY week_start_date)
-    ) * 100, 2
+
   )                                                                          AS total_consultations_growth_rate,
 
   -- Cross-source weekly total (unchanged)
